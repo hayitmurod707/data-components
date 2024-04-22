@@ -1,39 +1,7 @@
 import { bool, func, number } from 'prop-types';
-import { useTranslation } from 'react-i18next';
 import ReactJSPagination from 'react-js-pagination';
-import ReactSelect, { components } from 'react-select';
-import styled, { keyframes } from 'styled-components';
-const animation = keyframes`
-   0% {
-      opacity: 0.1;
-      transform: scale(0.6);
-   }
-   100% {
-      opacity: 1;
-      transform: scale(1);
-   }
-`;
-const StyledMenu = styled.div`
-   & .react-select-menu {
-      animation: ${animation} 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      background-color: #ffffff;
-      border-radius: 12px;
-      border: none;
-      box-shadow: 0 1px 20px 0 rgba(13, 46, 105, 0.07),
-         0 1px 20px 0 rgba(13, 46, 105, 0.07);
-      margin: 0;
-      overflow: hidden;
-      padding: 0;
-      transform-origin: bottom;
-   }
-`;
-const Menu = props => (
-   <StyledMenu>
-      <components.Menu {...props} className='react-select-menu'>
-         {props?.children}
-      </components.Menu>
-   </StyledMenu>
-);
+import ReactSelect from 'react-select';
+import styled from 'styled-components';
 const StyledElement = styled.div`
    align-items: center;
    display: flex;
@@ -105,7 +73,7 @@ const StyledElement = styled.div`
    }
 `;
 const selectOptions = {
-   components: { IndicatorSeparator: () => null, Menu },
+   components: { IndicatorSeparator: () => null },
    isClearable: false,
    isMulti: false,
    isSearchable: false,
@@ -169,7 +137,7 @@ const selectOptions = {
          margin: 0,
       }),
       indicatorsContainer: styles => ({ ...styles, padding: '0 10px 0 8px' }),
-      dropdownIndicator: (styles, { selectProps }) => ({
+      dropdownIndicator: styles => ({
          ...styles,
          alignItems: 'center',
          backgroundColor: '#3a79f3',
@@ -180,9 +148,6 @@ const selectOptions = {
          justifyContent: 'center',
          margin: 0,
          padding: 0,
-         transform: `rotate(${selectProps?.menuIsOpen ? '180deg' : 0})`,
-         transformOrigin: 'center',
-         transition: '0.4s transform',
          width: 23,
          svg: {
             width: 16,
@@ -190,6 +155,17 @@ const selectOptions = {
          ':hover': {
             color: '#ffffff',
          },
+      }),
+      menu: styles => ({
+         ...styles,
+         backgroundColor: '#ffffff',
+         border: 'none',
+         borderRadius: 12,
+         boxShadow:
+            '0 1px 20px 0 rgba(13, 46, 105, 0.07), 0 1px 20px 0 rgba(13, 46, 105, 0.07)',
+         margin: 0,
+         overflow: 'hidden',
+         padding: 0,
       }),
       menuPortal: styles => ({ ...styles, zIndex: 999 }),
       menuList: styles => ({
@@ -207,24 +183,16 @@ const selectOptions = {
             borderRadius: 3,
          },
       }),
-      option: (styles, { isSelected, isDisabled, isFocused }) => ({
+      option: (styles, { isSelected, isFocused }) => ({
          ...styles,
-         backgroundColor: isDisabled
-            ? '#f7f8fc'
-            : isSelected
+         backgroundColor: isSelected
             ? '#3a79f3'
             : isFocused
             ? 'rgba(82, 85, 241, 0.1)'
             : '#ffffff',
          borderRadius: 8,
-         color: isDisabled
-            ? '#696f85'
-            : isSelected
-            ? '#ffffff'
-            : isFocused
-            ? '#252a3b'
-            : '#252a3b',
-         cursor: isDisabled ? 'not-allowed' : 'pointer',
+         color: isSelected ? '#ffffff' : isFocused ? '#252a3b' : '#252a3b',
+         cursor: 'pointer',
          fontSize: 15,
          fontWeight: 600,
          height: 36,
@@ -232,27 +200,11 @@ const selectOptions = {
          padding: '8px 12px',
          textOverflow: 'ellipsis',
          transition: 200,
-         transitionTimingFunction: 'cubic-bezier(0, 0, 1, 1)',
          whiteSpace: 'nowrap',
          width: '100%',
          ':hover': {
-            backgroundColor: isDisabled
-               ? '#f7f8fc'
-               : isSelected
-               ? '#3a79f3'
-               : 'rgba(82, 85, 241, 0.1)',
+            backgroundColor: isSelected ? '#3a79f3' : 'rgba(82, 85, 241, 0.1)',
          },
-      }),
-      noOptionsMessage: styles => ({
-         ...styles,
-         color: 'rgb(37, 42, 59)',
-         cursor: 'not-allowed',
-         fontSize: 16,
-         fontWeight: 500,
-         height: 36,
-         padding: '9px 12px',
-         textAlign: 'left',
-         width: '100%',
       }),
    },
 };
@@ -289,8 +241,6 @@ const Pagination = ({
    page_size,
    totalItemsCount,
 }) => {
-   const { i18n } = useTranslation();
-   const { language } = i18n;
    const value = { label: page_size, value: page_size };
    const end = page * page_size > count ? count : page * page_size;
    const start = (page - 1) * page_size + 1;
@@ -300,13 +250,13 @@ const Pagination = ({
             <ReactSelect
                {...selectOptions}
                isDisabled={isDisabled}
+               value={value}
                onChange={option => {
                   onChange({ page: 1, page_size: option?.value });
                }}
-               value={value}
             />
             <h4 className='pagination-info'>
-               {start}-{end} {language === 'uz' ? '/' : 'из'} {count}
+               {start}-{end} из {count}
             </h4>
          </div>
          <ReactJSPagination
