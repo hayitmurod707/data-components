@@ -63,23 +63,23 @@ const StyledElement = styled.div`
 const Dotted2 = () => (
    <StyledElement>
       <div className='content'>
-         <div class='loader'>
-            <div class='dot'></div>
+         <div className='loader'>
+            <div className='dot'></div>
          </div>
-         <div class='loader'>
-            <div class='dot'></div>
+         <div className='loader'>
+            <div className='dot'></div>
          </div>
-         <div class='loader'>
-            <div class='dot'></div>
+         <div className='loader'>
+            <div className='dot'></div>
          </div>
-         <div class='loader'>
-            <div class='dot'></div>
+         <div className='loader'>
+            <div className='dot'></div>
          </div>
-         <div class='loader'>
-            <div class='dot'></div>
+         <div className='loader'>
+            <div className='dot'></div>
          </div>
-         <div class='loader'>
-            <div class='dot'></div>
+         <div className='loader'>
+            <div className='dot'></div>
          </div>
       </div>
    </StyledElement>

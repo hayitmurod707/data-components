@@ -8,6 +8,38 @@ import Dotted1 from './components/Loading/Dotted1';
 import Dotted2 from './components/Loading/Dotted2';
 import Dotted3 from './components/Loading/Dotted3';
 import Dotted4 from './components/Loading/Dotted4';
+import Pagination from './components/Pagination';
+const StyledHeader = styled.div`
+   align-items: center;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   width: 100%;
+   & h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin: 32px 0 0 0;
+      text-align: center;
+   }
+   & p {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 24px 0 0 0;
+      text-align: center;
+      color: #768695;
+      & a {
+         align-items: center;
+         background-color: #5254f1;
+         border-radius: 10px;
+         color: white;
+         display: flex;
+         font-size: 16px;
+         justify-content: center;
+         padding: 12px 24px;
+         text-decoration: none;
+      }
+   }
+`;
 const StyledLoading = styled.div`
    align-items: center;
    display: flex;
@@ -17,7 +49,21 @@ const StyledLoading = styled.div`
 `;
 const App = () => {
    return (
-      <Fragment className='App'>
+      <Fragment>
+         <StyledHeader>
+            <h1>Data components</h1>
+            <p>Data components for react application</p>
+            <p>
+               <a
+                  href='https://github.com/hayitmurod707/data-components'
+                  rel='noreferrer'
+                  target='_blank'
+               >
+                  Github repository
+               </a>
+            </p>
+         </StyledHeader>
+         <Pagination />
          <StyledLoading>
             <Bubbles />
             <Circular1 />
