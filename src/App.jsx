@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import styled from 'styled-components';
 import Bubbles from './components/Loading/Bubbles';
 import Circular1 from './components/Loading/Circular1';
@@ -48,6 +48,11 @@ const StyledLoading = styled.div`
    justify-content: space-evenly;
 `;
 const App = () => {
+   const [value, setValue] = useState({
+      page: 1,
+      count: 200,
+      per_page: 10,
+   });
    return (
       <Fragment>
          <StyledHeader>
@@ -63,7 +68,11 @@ const App = () => {
                </a>
             </p>
          </StyledHeader>
-         <Pagination />
+         <div style={{ padding: '20px 300px' }}>
+            <h2 style={{ textAlign: 'center' }}>Pagination</h2>
+            <br />
+            <Pagination value={value} onChange={setValue} />
+         </div>
          <StyledLoading>
             <Bubbles />
             <Circular1 />

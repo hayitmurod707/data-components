@@ -2,7 +2,6 @@ import { bool, func, object } from 'prop-types';
 import ReactJSPagination from 'react-js-pagination';
 const options = {
    getPageUrl: () => null,
-   hideDisabled: true,
    itemsCountPerPage: 1,
    pageRangeDisplayed: 5,
    nextPageText: (
@@ -26,28 +25,29 @@ const options = {
       </svg>
    ),
 };
-const Pagination = ({
+const Paginate = ({
    isDisabled = false,
    onChange,
-   value = { page: 1, page_count: 1, per_page: 1 },
+   value = { page: 1, count: 1, per_page: 1 },
 }) => {
-   const { page, per_page, page_count } = value;
+   const { page, per_page, count } = value;
    return (
       <ReactJSPagination
          {...options}
          activePage={page}
-         totalItemsCount={page_count}
+         itemClass={isDisabled ? 'disabled' : ''}
+         totalItemsCount={Math.ceil(count / per_page)}
          onChange={page => {
             if (!isDisabled) {
-               onChange({ page, page_count, per_page });
+               onChange({ page, count, per_page });
             }
          }}
       />
    );
 };
-Pagination.propTypes = {
+Paginate.propTypes = {
    isDisabled: bool,
    onChange: func,
    value: object,
 };
-export default Pagination;
+export default Paginate;

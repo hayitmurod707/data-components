@@ -26,16 +26,23 @@ const options = {
          label: '30',
          value: 30,
       },
+      {
+         label: '50',
+         value: 50,
+      },
+      {
+         label: '100',
+         value: 100,
+      },
    ],
    styles: {
-      control: styles => ({
+      control: (styles, { isDisabled = false }) => ({
          ...styles,
-         backgroundColor: '#ffffff',
+         backgroundColor: isDisabled ? '#F9F6F3' : 'rgba(87, 98, 247, 0.1)',
          border: 'none',
          borderRadius: 10,
          boxShadow: 'none',
-         color: 'rgb(37, 42, 59)',
-         cursor: 'pointer',
+         cursor: isDisabled ? 'default' : 'pointer',
          height: 40,
          minHeight: 40,
          minWidth: 70,
@@ -52,20 +59,18 @@ const options = {
          height: 42,
          padding: '10px 4px 10px 14px',
       }),
-      singleValue: (styles, { data }) => ({
+      singleValue: (styles, { isDisabled = false }) => ({
          ...styles,
-         color: data?.isDisabled ? '#696f85' : '#252a3b',
+         color: isDisabled ? '#696f85' : '#3c3c3c',
          fontSize: 15,
          fontWeight: 600,
          margin: 0,
       }),
       indicatorsContainer: styles => ({ ...styles, padding: '0 10px 0 8px' }),
-      dropdownIndicator: styles => ({
+      dropdownIndicator: (styles, { isDisabled = false }) => ({
          ...styles,
          alignItems: 'center',
-         backgroundColor: '#3a79f3',
-         borderRadius: 13,
-         color: '#ffffff',
+         color: isDisabled ? '#696f85' : '#3c3c3c',
          display: 'flex',
          height: 23,
          justifyContent: 'center',
@@ -76,7 +81,7 @@ const options = {
             width: 16,
          },
          ':hover': {
-            color: '#ffffff',
+            color: isDisabled ? '#696f85' : '#3c3c3c',
          },
       }),
       menu: styles => ({
@@ -131,7 +136,7 @@ const options = {
       }),
    },
 };
-const StyledPerPage = styled.div`
+const StyledPageSize = styled.div`
    align-items: center;
    display: flex;
    & h4 {
@@ -141,33 +146,33 @@ const StyledPerPage = styled.div`
       margin: 0 0 0 16px;
    }
 `;
-const PerPage = ({
+const PageSize = ({
    isDisabled = false,
    onChange,
-   value = { page: 1, page_count: 1, per_page: 1 },
+   value = { page: 1, count: 1, per_page: 1 },
 }) => {
-   const { page, page_count, per_page } = value;
-   const end = page * per_page > page_count ? page_count : page * per_page;
+   const { page, count, per_page } = value;
+   const end = page * per_page > count ? count : page * per_page;
    const start = (page - 1) * per_page + 1;
    return (
-      <StyledPerPage>
+      <StyledPageSize>
          <ReactSelect
             {...options}
             isDisabled={isDisabled}
             value={{ label: per_page, value: per_page }}
             onChange={option => {
-               onChange({ page: 1, per_page: option?.value, page_count });
+               onChange({ page: 1, per_page: option?.value, count });
             }}
          />
          <h4>
-            {start}-{end} из {page_count}
+            {start} - {end} из {count}
          </h4>
-      </StyledPerPage>
+      </StyledPageSize>
    );
 };
-PerPage.propTypes = {
+PageSize.propTypes = {
    isDisabled: bool,
    onChange: func,
    value: object,
 };
-export default PerPage;
+export default PageSize;
