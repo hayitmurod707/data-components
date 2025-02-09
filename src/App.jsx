@@ -50,9 +50,9 @@ const StyledLoading = styled.div`
 const App = () => {
    const [value, setValue] = useState({
       page: 1,
-      count: 200,
-      per_page: 10,
+      page_size: 10,
    });
+   const { page, page_size } = value;
    return (
       <Fragment>
          <StyledHeader>
@@ -71,7 +71,13 @@ const App = () => {
          <div style={{ padding: '20px 300px' }}>
             <h2 style={{ textAlign: 'center' }}>Pagination</h2>
             <br />
-            <Pagination value={value} onChange={setValue} />
+            <Pagination
+               onChange={setValue}
+               page={page}
+               page_size={page_size}
+               perViewCount={7}
+               totalItemsCount={117}
+            />
          </div>
          <StyledLoading>
             <Bubbles />

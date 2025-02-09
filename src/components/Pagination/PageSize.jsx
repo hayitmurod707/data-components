@@ -1,7 +1,19 @@
-import { bool, func, object } from 'prop-types';
+import { bool, func, number } from 'prop-types';
+import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import styled from 'styled-components';
-const options = {
+const StyledElement = styled.div`
+   align-items: center;
+   display: flex;
+   & h4 {
+      color: #3c3c3c;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 0 16px;
+   }
+`;
+const selectOptions = {
    components: { IndicatorSeparator: () => null },
    isClearable: false,
    isMulti: false,
@@ -36,13 +48,14 @@ const options = {
       },
    ],
    styles: {
-      control: (styles, { isDisabled = false }) => ({
+      control: styles => ({
          ...styles,
-         backgroundColor: isDisabled ? '#F9F6F3' : 'rgba(87, 98, 247, 0.1)',
+         backgroundColor: '#ffffff',
          border: 'none',
          borderRadius: 10,
          boxShadow: 'none',
-         cursor: isDisabled ? 'default' : 'pointer',
+         color: 'rgb(37, 42, 59)',
+         cursor: 'pointer',
          height: 40,
          minHeight: 40,
          minWidth: 70,
@@ -59,18 +72,26 @@ const options = {
          height: 42,
          padding: '10px 4px 10px 14px',
       }),
-      singleValue: (styles, { isDisabled = false }) => ({
+      singleValue: (styles, { data }) => ({
          ...styles,
-         color: isDisabled ? '#696f85' : '#3c3c3c',
-         fontSize: 15,
+         color: data?.isDisabled ? '#696f85' : '#252a3b',
+         fontSize: 16,
+         fontWeight: 600,
+         margin: 0,
+      }),
+      placeholder: styles => ({
+         ...styles,
+         fontSize: 16,
          fontWeight: 600,
          margin: 0,
       }),
       indicatorsContainer: styles => ({ ...styles, padding: '0 10px 0 8px' }),
-      dropdownIndicator: (styles, { isDisabled = false }) => ({
+      dropdownIndicator: styles => ({
          ...styles,
          alignItems: 'center',
-         color: isDisabled ? '#696f85' : '#3c3c3c',
+         backgroundColor: 'transparent',
+         borderRadius: 13,
+         color: '#949494',
          display: 'flex',
          height: 23,
          justifyContent: 'center',
@@ -78,10 +99,10 @@ const options = {
          padding: 0,
          width: 23,
          svg: {
-            width: 16,
+            width: 18,
          },
          ':hover': {
-            color: isDisabled ? '#696f85' : '#3c3c3c',
+            color: '#949494',
          },
       }),
       menu: styles => ({
@@ -107,72 +128,90 @@ const options = {
             backgroundColor: 'transparent',
          },
          '::-webkit-scrollbar-thumb': {
-            backgroundColor: '#3a79f3',
+            backgroundColor: '#5254f1',
             borderRadius: 3,
          },
       }),
-      option: (styles, { isSelected, isFocused }) => ({
+      option: (styles, { isSelected, isDisabled, isFocused }) => ({
          ...styles,
-         backgroundColor: isSelected
-            ? '#3a79f3'
+         backgroundColor: isDisabled
+            ? '#f7f8fc'
+            : isSelected
+            ? '#5254f1'
             : isFocused
-            ? 'rgba(82, 85, 241, 0.1)'
+            ? '#f1f1f1'
             : '#ffffff',
          borderRadius: 8,
-         color: isSelected ? '#ffffff' : isFocused ? '#252a3b' : '#252a3b',
-         cursor: 'pointer',
-         fontSize: 15,
-         fontWeight: 600,
+         color: isDisabled
+            ? '#696f85'
+            : isSelected
+            ? '#ffffff'
+            : isFocused
+            ? '#252a3b'
+            : '#252a3b',
+         cursor: isDisabled ? 'not-allowed' : 'pointer',
+         fontSize: 16,
+         fontWeight: 500,
          height: 36,
          overflow: 'hidden',
          padding: '8px 12px',
          textOverflow: 'ellipsis',
          transition: 200,
+         transitionTimingFunction: 'cubic-bezier(0, 0, 1, 1)',
          whiteSpace: 'nowrap',
          width: '100%',
          ':hover': {
-            backgroundColor: isSelected ? '#3a79f3' : 'rgba(82, 85, 241, 0.1)',
+            backgroundColor: isDisabled
+               ? '#f7f8fc'
+               : isSelected
+               ? '#5254f1'
+               : '#f1f1f1',
          },
       }),
    },
 };
-const StyledPageSize = styled.div`
-   align-items: center;
-   display: flex;
-   & h4 {
-      color: #3c3c3c;
-      font-size: 15px;
-      font-weight: 600;
-      margin: 0 0 0 16px;
-   }
-`;
-const PageSize = ({
+const Pagination = ({
+   totalItemsCount = 1,
    isDisabled = false,
    onChange,
-   value = { page: 1, count: 1, per_page: 1 },
+   page = 1,
+   page_size = 1,
 }) => {
-   const { page, count, per_page } = value;
-   const end = page * per_page > count ? count : page * per_page;
-   const start = (page - 1) * per_page + 1;
+   const { i18n } = useTranslation();
+   const { language } = i18n;
+   const value = useMemo(() => {
+      const value = { label: page_size, value: page_size };
+      return value;
+   }, [page_size]);
+   const state = useMemo(() => {
+      const end =
+         page * page_size > totalItemsCount
+            ? totalItemsCount
+            : page * page_size;
+      const start = (page - 1) * page_size + 1;
+      const suffix = language === 'uz' ? '/' : 'из';
+      const state = `${start}-${end} ${suffix} ${totalItemsCount}`;
+      return state;
+   }, [language, page, page_size, totalItemsCount]);
    return (
-      <StyledPageSize>
+      <StyledElement>
          <ReactSelect
-            {...options}
+            {...selectOptions}
             isDisabled={isDisabled}
-            value={{ label: per_page, value: per_page }}
+            value={value}
             onChange={option => {
-               onChange({ page: 1, per_page: option?.value, count });
+               onChange({ page: 1, page_size: option?.value });
             }}
          />
-         <h4>
-            {start} - {end} из {count}
-         </h4>
-      </StyledPageSize>
+         <h4>{state}</h4>
+      </StyledElement>
    );
 };
-PageSize.propTypes = {
+Pagination.propTypes = {
+   count: number,
    isDisabled: bool,
    onChange: func,
-   value: object,
+   page: number,
+   page_size: number,
 };
-export default PageSize;
+export default Pagination;
